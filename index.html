@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP8266 Control Panel</title>
+  <script>
+    function togglePin(pin) {
+      const espIpAddress = document.getElementById('esp-ip').value;
+      fetch(`http://${espIpAddress}/pin/${pin}/toggle`)
+        .then(response => {
+          if (response.ok) {
+            console.log(`Pin ${pin} toggled successfully.`);
+          } else {
+            console.error('Failed to toggle pin:', response.status);
+          }
+        })
+        .catch(error => console.error('Error toggling pin:', error));
+    }
+
+    function checkConnection() {
+      const espIpAddress = document.getElementById('esp-ip').value;
+      fetch(`http://${espIpAddress}/status`)
+        .then(response => {
+          if (response.ok) {
+            document.getElementById('connection-status').textContent = 'Connected';
+          } else {
+            document.getElementById('connection-status').textContent = 'Disconnected';
+          }
+        })
+        .catch(error => console.error('Error checking connection:', error));
+    }
+  </script>
+</head>
+<body>
+  <h1>ESP8266 Control Panel</h1>
+  <label for="esp-ip">Enter ESP8266 IP Address:</label>
+  <input type="text" id="esp-ip" name="esp-ip" placeholder="Enter IP address">
+  <button onclick="checkConnection()">Check Connection</button>
+  <p>Connection Status: <span id="connection-status">Unknown</span></p>
+  <button onclick="togglePin(1)">Toggle Pin 1</button>
+  <button onclick="togglePin(2)">Toggle Pin 2</button>
+</body>
+</html>
